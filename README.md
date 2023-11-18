@@ -36,3 +36,4 @@ Running the Application
 Launch the FAST API server.
 Start the Streamlit app.
 Input a text query or upload/link an image in the Streamlit interface to receive relevant image results or similar images from the fashion dataset.
+https://codelabs-preview.appspot.com/?file_id=1y3ETqwDTn8Kme4Gc1Ac6WIlKli6CC3bhxww-oMYB6iw#0
