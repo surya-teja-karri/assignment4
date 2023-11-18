@@ -75,4 +75,18 @@ image_paths = glob.glob('/Users/tanayparikh/Desktop/Assignment-4/Fashion_images/
 images = {}
 image_style_embeddings = {}
 
+for image_path in image_paths:
+    image = cv2.imread(image_path, 3)
+    b, g, r = cv2.split(image)
+    image = cv2.merge([r, g, b])
+    image = cv2.resize(image, (200, 200))
+    images[ntpath.basename(image_path)] = image
+
+for image_path in image_paths:
+    image_tensor = load_image(image_path)
+    style = style_to_vec(image_to_style(image_tensor))
+    image_style_embeddings[ntpath.basename(image_path)] = style
+
+tsne = manifold.TSNE(n_components=2, init='pca', perplexity=10, random_state=0)
+X_tsne = tsne.fit_transform(np.array(list(image_style_embeddings.values())))
 
