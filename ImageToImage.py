@@ -90,3 +90,16 @@ for image_path in image_paths:
 tsne = manifold.TSNE(n_components=2, init='pca', perplexity=10, random_state=0)
 X_tsne = tsne.fit_transform(np.array(list(image_style_embeddings.values())))
 
+def embedding_plot(X, images, thumbnail_sparsity=0.005, thumbnail_size=0.3):
+    x_min, x_max = np.min(X, axis=0), np.max(X, axis=0)
+    X = (X - x_min) / (x_max - x_min)
+    fig, ax = plt.subplots(1, figsize=(12, 12))
+    shown_images = np.array([[1., 1.]])
+    for i in range(X.shape[0]):
+        if np.min(np.sum((X[i] - shown_images) ** 2, axis=1)) < thumbnail_sparsity:
+            continue
+        shown_images = np.r_[shown_images, [X[i]]]
+        thumbnail = offsetbox.OffsetImage(images[i], cmap=plt.cm.gray_r, zoom=thumbnail_size)
+        ax.add_artist(offsetbox.AnnotationBbox(thumbnail, X[i], bboxprops=dict(edgecolor='white'), pad=0.0))
+    plt.grid(True)
+
