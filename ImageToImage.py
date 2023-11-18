@@ -61,6 +61,18 @@ class StyleModel(tf.keras.models.Model):
         style_dict = {style_name: value for style_name, value in zip(self.style_layers, style_outputs)}
         return {'content': content_dict, 'style': style_dict}
 
+vgg = tf.keras.applications.VGG19(include_top=False, weights='imagenet')
 
+def image_to_style(image_tensor):
+    extractor = StyleModel(style_layers, content_layers)
+    return extractor(image_tensor)['style']
+
+def style_to_vec(style):
+    return np.hstack([np.ravel(s) for s in style.values()])
+
+image_paths = glob.glob('/Users/tanayparikh/Desktop/Assignment-4/Fashion_images/*.jpg')
+
+images = {}
+image_style_embeddings = {}
 
 
