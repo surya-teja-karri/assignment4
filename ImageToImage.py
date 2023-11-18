@@ -103,3 +103,40 @@ def embedding_plot(X, images, thumbnail_sparsity=0.005, thumbnail_size=0.3):
         ax.add_artist(offsetbox.AnnotationBbox(thumbnail, X[i], bboxprops=dict(edgecolor='white'), pad=0.0))
     plt.grid(True)
 
+
+# Create a Streamlit app
+st.title("Image Similarity Search: Developing a Content-Based Image Retrieval System")
+
+# Upload a reference image
+user_image = st.file_uploader("Upload your reference image", type=["jpg", "jpeg"])
+
+if user_image is not None:
+    user_image = load_image(user_image)
+    user_style_embedding = style_to_vec(image_to_style(user_image))
+
+    # Perform style-based image search
+    if st.button("Search for Images by Style"):
+        st.write("Searching for images by style...")
+        st.write("Please wait, this might take a moment.")
+
+
+        def search_by_style(image_style_embeddings, images, reference_image, max_results=3):
+            v0 = reference_image
+            distances = {}
+            for k, v in image_style_embeddings.items():
+                d = sc.spatial.distance.cosine(v0, v)
+                distances[k] = d
+
+            sorted_neighbors = sorted(distances.items(), key=lambda x: x[1], reverse=False)
+
+            f, ax = plt.subplots(1, max_results, figsize=(16, 8))
+            for i, img in enumerate(sorted_neighbors[:max_results]):
+                ax[i].imshow(images[img[0]])
+                ax[i].set_axis_off()
+
+            st.pyplot(f)
+
+        search_by_style(image_style_embeddings, images, user_style_embedding)
+
+
+
